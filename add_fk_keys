@@ -1,0 +1,19 @@
+SELECT conname, conrelid::regclass AS table_name
+FROM pg_constraint
+WHERE conname ILIKE 'fk_order%';
+
+ALTER TABLE northwind.orders
+ADD CONSTRAINT fk_orders_employees
+FOREIGN KEY (employeeid) REFERENCES northwind.employees(employeeid)
+
+ALTER TABLE northwind.orders
+ADD CONSTRAINT fk_orders_customers
+FOREIGN KEY (customerid) REFERENCES northwind.customers(customerid)
+
+ALTER TABLE northwind.order_details
+ADD CONSTRAINT fk_order_details_orders
+FOREIGN KEY (orderid) REFERENCES northwind.orderid(orderid)
+
+ALTER TABLE northwind.order_details
+ADD CONSTRAINT fk_order_details_products
+FOREIGN KEY (productid) REFERENCES northwind.products(productid)
