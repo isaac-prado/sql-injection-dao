@@ -7,7 +7,7 @@ class CustomerDAO:
         
     def GetCustomerByName(self, customer_name):
         try:
-            self.session.execute("SELECT customerid FROM northwind.customers WHERE companyname ILIKE %s", (customer_name,))
+            self.session.execute("SELECT customerid FROM northwind.customers WHERE companyname ILIKE %s LIMIT 1", (f"%{customer_name}%",))
             return self.session.fetchone()
         except Exception as e:
             print(f"Error getting customer by name: {e}")

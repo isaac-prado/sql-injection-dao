@@ -6,9 +6,21 @@ from datetime import date
 
 dao = OrderDAO()
 
-cliente = CustomerDAO().GetCustomerByName("Alfreds")
+cliente = CustomerDAO().GetCustomerByName("isaac")
 vendedor = EmployeeDAO().GetEmployeeByName("Nancy")
 produto = ProductDAO().GetProductByName("Chai")
+
+if not cliente: 
+    print("Customer not found")
+    exit()
+
+if not vendedor:
+    print("Employee not found")
+    exit()
+
+if not produto:
+    print("Product not found")
+    exit()
 
 order_id = dao.InsertOrder(
     customer_id=cliente[0],
@@ -27,8 +39,9 @@ order_id = dao.InsertOrder(
     items=[{
         'product_id': produto[0],
         'quantity': 2,
-        'unit_price': produto[2]
+        'unit_price': produto[2],
+        'discount': 0.0
     }]
 )
 
-print(f"Pedido {order_id} inserido com sucesso!")
+print(f"Order {order_id} inserted successfully!")

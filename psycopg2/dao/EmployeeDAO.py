@@ -7,7 +7,7 @@ class EmployeeDAO:
         
     def GetEmployeeByName(self, employee_name):
         try:
-            self.session.execute("SELECT employeeid FROM northwind.employees WHERE firstname ILIKE %s", (employee_name,))
+            self.session.execute("SELECT employeeid FROM northwind.employees WHERE firstname ILIKE %s LIMIT 1", (employee_name,))
             return self.session.fetchone()
         except Exception as e:
             print(f"Error getting employee by name: {e}")
