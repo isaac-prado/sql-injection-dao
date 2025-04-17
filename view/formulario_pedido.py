@@ -1,6 +1,6 @@
 import tkinter as tk
 from controller.OrderController import OrderController
-
+from datetime import datetime
 sql_injection_prevention_flag = True
 
 class FormularioPedidoDinamico:
@@ -94,16 +94,21 @@ class FormularioPedidoDinamico:
         toast_window.after(3000, toast_window.destroy)  # 3000 milissegundos = 3 segundos
 
     def enviar(self):
+        raw_date = self.text_dados_do_pedido.get("1.0", tk.END).strip()
+
+        if raw_date:
+            required_date = datetime.strptime(raw_date, "%Y-%m-%d")
+        else:
+            required_date = datetime.now()
+
         self.order_controller.InsertOrder(
             customer_id=self.entry_nome_do_cliente.get(),
             employee_id=self.entry_nome_do_vendedor.get(),
-            ship_data={
-                "required_date": self.text_dados_do_pedido.get("1.0", tk.END).strip()
-            },
+            ship_data={"required_date": required_date},
             items=[{
                 "productname": item["nome"].get(),
                 "quantity": item["quantidade"].get()
             } for item in self.itens]
         )
-        self.mostrar_toast("Pedido enviado com sucesso!")
+        self.mostrar_toast("✅ Pedido enviado com sucesso!")
 

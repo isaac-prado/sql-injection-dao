@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from orm.db.database import getSession
 from orm.model.model import Orders, OrderDetails
 
@@ -38,7 +39,10 @@ class OrderDAOSqlAlchemy:
         items
     ):
         try:
+            next_order_id = self.session.query(func.max(Orders.orderid)).scalar() + 1
+
             new_order = Orders(
+                orderid=next_order_id,
                 customerid=customer_id,
                 employeeid=employee_id,
                 orderdate=order_date,
@@ -58,16 +62,16 @@ class OrderDAOSqlAlchemy:
             
             for item in items:
                 order_detail = OrderDetails(
-                    orderid=new_order.orderid,
-                    productid=item['product_id'],
-                    unitprice=item['unit_price'],
+                    orderid=next_order_id,
+                    productid=item['productid'],
+                    unitprice=item['unitprice'],
                     quantity=item['quantity'],
                     discount=item['discount']
                 )
                 self.session.add(order_detail)
 
             self.session.commit()
-            return new_order.orderid
+            return next_order_id
         except Exception as e:
             print(f"Error inserting order: {e}")
             self.session.rollback()

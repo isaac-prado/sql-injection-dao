@@ -1,5 +1,3 @@
-from noorm.dao.ProductDAO import ProductDAO
-
 class ProductController:
     def __init__(self, product_dao):
         self.ProductDAO = product_dao
@@ -9,6 +7,5 @@ class ProductController:
         
         if not product:
             return ValueError("Product not found")
-        
-        print(product)        
+          
         return product

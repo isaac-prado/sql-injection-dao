@@ -1,11 +1,9 @@
-from noorm.dao.CustomerDAO import CustomerDAO
-
 class CustomerController:
     def __init__(self, customer_dao):
         self.CustomerDAO = customer_dao
 
     def GetCustomerByName(self, name):
         customer = self.CustomerDAO.GetCustomerByName(name)
-        if not customer:
+        if not customer or not getattr(customer, "customerid", None):
             return ValueError("Customer not found")
         return customer

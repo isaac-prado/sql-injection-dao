@@ -22,12 +22,17 @@ class OrderController:
             self.customer_controller = CustomerController(CustomerDAO())
             self.employee_controller = EmployeeController(EmployeeDAO())
             self.product_controller = ProductController(ProductDAO())
+            print("--------------------------------")
+            print("UTILIZANDO PSYCOPG2")
+            print("--------------------------------")
         else:
             self.order_dao = OrderDAOSqlAlchemy()
             self.customer_controller = CustomerController(CustomerDAOSqlAlchemy())
             self.employee_controller = EmployeeController(EmployeeDAOSqlAlchemy())
             self.product_controller = ProductController(ProductDAOSqlAlchemy())
-        
+            print("--------------------------------")
+            print("UTILIZANDO SQLALCHEMY")
+            print("--------------------------------")
     def InsertOrder(
         self,
         customer_id: str,
@@ -38,17 +43,21 @@ class OrderController:
         try:
             customer = self.customer_controller.GetCustomerByName(customer_id)
             employee = self.employee_controller.GetEmployeeByName(employee_id)
-
             formated_items = []
-            for item in items:
-                
-                formated_items.append({
-                    "productid": product.get("productid"),
-                    "unitprice": product.get("unitprice"),
-                    "quantity": item.get("quantity"),
-                    "discount": 0
-                })
 
+            for item in items:
+                try:
+                    product = self.product_controller.GetProductByName(item.get("productname"))
+                except ValueError as e:
+                    print(f"Error getting product by name: {e}")
+                    raise e
+                
+                formated_items. append({
+                    "productid": product.productid,
+                    "unitprice": product.unitprice,
+                    "quantity": item.get("quantity"),
+                    "discount": item.get("discount")
+                })
                 order_id = self.order_dao.InsertOrder(
                     customer_id=customer.customerid,
                     employee_id=employee.employeeid,
@@ -66,6 +75,10 @@ class OrderController:
                     items=formated_items
                 )
 
+                print("--------------------------------")
+                print("ORDER ID DO PEDIDO ENVIADO:")
+                print(order_id)
+                print("--------------------------------")
                 return order_id
         except Exception as e:
             print(f"Error inserting order: {e}")
