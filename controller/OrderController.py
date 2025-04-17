@@ -111,6 +111,9 @@ class OrderController:
             print(f"Error inserting order: {e}")
             raise e
 
-
-            
-            
+    def GetOrderInformationById(self, order_id):
+        try:
+            return self.order_dao.OrderInformationById(order_id)
+        except Exception as e:
+            print(f"Error getting order information by id: {e}")
+            return None

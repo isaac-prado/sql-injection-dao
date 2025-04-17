@@ -50,6 +50,15 @@ class FormularioPedidoDinamico:
         botao_enviar = tk.Button(self.janela, text="Enviar", command=self.enviar)
         botao_enviar.grid(row=6, column=0, columnspan=4, padx=5, pady=10)
 
+        # Campo para ID do pedido
+        self.entry_order_id = tk.Entry(self.janela)
+        self.entry_order_id.grid(row=7, column=1, padx=5, pady=5, sticky="ew")
+        tk.Label(self.janela, text="ID do Pedido para relatório:").grid(row=7, column=0, padx=5, pady=5, sticky="w")
+
+        # Botão para ver relatório
+        botao_relatorio = tk.Button(self.janela, text="📄 Ver Detalhes do Pedido", command=self.ver_relatorio_pedido)
+        botao_relatorio.grid(row=8, column=0, columnspan=2, padx=5, pady=5)
+
         self.janela.grid_columnconfigure(1, weight=1)
         self.janela.grid_columnconfigure(3, weight=1)
 
@@ -147,4 +156,38 @@ class FormularioPedidoDinamico:
             } for item in self.itens]
         )
         self.mostrar_toast("✅ Pedido enviado com sucesso!")
+
+    def ver_relatorio_pedido(self):
+        self.atualizar_controller()
+
+        if self.order_controller is None:
+            self.mostrar_toast("⚠️ Modo inválido, corrija as opções.")
+            return
+
+        order_id = self.entry_order_id.get().strip()
+
+        if not order_id.isdigit():
+            self.mostrar_toast("⚠️ Informe um número de pedido válido.")
+            return
+
+        try:
+            dados = self.order_controller.GetOrderInformationById(int(order_id))
+            if not dados:
+                self.mostrar_toast("❌ Pedido não encontrado.")
+                return
+
+            print("\n📋 DETALHES DO PEDIDO")
+            cabecalho = dados[0]
+            print(f"Pedido #{cabecalho[0]} - Data: {cabecalho[1]}")
+            print(f"Cliente: {cabecalho[2]}")
+            print(f"Vendedor: {cabecalho[3]} {cabecalho[4]}")
+            print("Itens:")
+            for item in dados:
+                print(f"• {item[5]} | Quantidade: {item[6]} | Preço: R$ {item[7]:.2f}")
+
+            self.mostrar_toast("✅ Detalhes do pedido exibidos no terminal.")
+
+        except Exception as e:
+            print(f"Erro no relatório: {e}")
+            self.mostrar_toast(f"❌ Erro ao gerar relatório: {e}")
 

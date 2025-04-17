@@ -1,7 +1,6 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import func
 from orm.db.database import getSession
-from orm.model.model import Orders, OrderDetails
+from orm.model.model import Orders, OrderDetails, Customers, Employees, Products
 
 class OrderDAOSqlAlchemy:
     def __init__(self):
@@ -75,4 +74,31 @@ class OrderDAOSqlAlchemy:
         except Exception as e:
             print(f"Error inserting order: {e}")
             self.session.rollback()
+            return None
+        
+    def OrderInformationById(self, order_id):
+        try:
+            query = self.session.query(
+                Orders.orderid,
+                Orders.orderdate,
+                Customers.companyname.label('customer_name'),
+                func.concat(Employees.firstname, ' ', Employees.lastname).label('employee_name'),
+                Products.productname.label('product_name'),
+                OrderDetails.quantity,
+                OrderDetails.unitprice
+            ).join(
+                Customers, Orders.customerid == Customers.customerid
+            ).join(
+                Employees, Orders.employeeid == Employees.employeeid
+            ).join(
+                OrderDetails, Orders.orderid == OrderDetails.orderid
+            ).join(
+                Products, OrderDetails.productid == Products.productid
+            ).filter(
+                Orders.orderid == order_id
+            ).all()
+
+            return query
+        except Exception as e:
+            print(f"Error getting order by id: {e}")
             return None

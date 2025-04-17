@@ -111,4 +111,27 @@ class OrderDAO:
             print(f"Error inserting order: {e}")
             return None
         
-        
+    def OrderInformationById(self, order_id):
+        try:
+            query = """
+                SELECT 
+                    o.orderid,
+                    o.orderdate,
+                    c.companyname AS customer_name,
+                    e.firstname || ' ' || e.lastname AS employee_name,
+                    p.productname,
+                    od.quantity,
+                    od.unitprice
+                FROM northwind.orders o
+                JOIN northwind.customers c ON o.customerid = c.customerid
+                JOIN northwind.employees e ON o.employeeid = e.employeeid
+                JOIN northwind.order_details od ON o.orderid = od.orderid
+                JOIN northwind.products p ON od.productid = p.productid
+                WHERE o.orderid = %s
+            """
+
+            self.session.execute(query, (order_id,))
+            return self.session.fetchone()
+        except Exception as e:
+            print(f"Error getting order by id: {e}")
+            return None
