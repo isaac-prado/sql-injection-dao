@@ -7,5 +7,4 @@ class ProductController:
         
         if not product:
             return ValueError("Product not found")
-          
         return product

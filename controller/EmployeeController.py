@@ -4,6 +4,7 @@ class EmployeeController:
 
     def GetEmployeeByName(self, name):
         employee = self.EmployeeDAO.GetEmployeeByName(name)
-        if not employee or not getattr(employee, "employeeid", None):
+
+        if not employee:
             return ValueError("Employee not found")
         return employee

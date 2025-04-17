@@ -4,6 +4,7 @@ class CustomerController:
 
     def GetCustomerByName(self, name):
         customer = self.CustomerDAO.GetCustomerByName(name)
-        if not customer or not getattr(customer, "customerid", None):
+
+        if not customer:
             return ValueError("Customer not found")
         return customer

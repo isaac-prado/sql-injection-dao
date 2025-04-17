@@ -6,8 +6,8 @@ def getConnection():
         connection = psycopg2.connect(
             host="localhost",
         database="northwind",
-        user="postgres",
-        password="root"
+        user="isaac",
+        password="isaac"
         )
         print("Connected to the database")
         return connection
