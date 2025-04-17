@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 from db.database import getConnection
 from model.model import Product
 
-class ProductDAO:
+class ProductDAOSqlAlchemy:
     def __init__(self):
         self.connection = getConnection()
         self.Session = sessionmaker(bind=self.connection)

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from db.database import getSession
 from model.model import Order, OrderDetail
 
-class OrderDAO:
+class OrderDAOSqlAlchemy:
     def __init__(self):
         self.session: Session = getSession()
 

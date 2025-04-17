@@ -1,7 +1,7 @@
-from dao.ProductDAO import ProductDAO
+from psycopg2.dao.ProductDAO import ProductDAO
 
 class ProductController:
-    def __init__(self):
+    def __init__(self, product_dao):
         self.ProductDAO = ProductDAO()
         
     def GetProductByName(self, name):

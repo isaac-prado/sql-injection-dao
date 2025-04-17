@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from db.database import getConnection
 from model.model import Employee
 
-class EmployeeDAO:
+class EmployeeDAOSqlAlchemy:
     def __init__(self):
         self.connection = getConnection()
         

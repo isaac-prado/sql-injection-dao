@@ -1,7 +1,7 @@
 from db.database import getSession
 from model.model import Customer
 
-class CustomerDAO:
+class CustomerDAOSqlAlchemy:
     def __init__(self):
         self.session = getSession()
         

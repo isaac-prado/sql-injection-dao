@@ -1,4 +1,13 @@
-from dao.OrderDAO import OrderDAO
+from psycopg2.dao.OrderDAO import OrderDAO
+from psycopg2.dao.CustomerDAO import CustomerDAO
+from psycopg2.dao.EmployeeDAO import EmployeeDAO
+from psycopg2.dao.ProductDAO import ProductDAO
+
+from orm.dao.OrderDAOSqlAlchemy import OrderDAOSqlAlchemy
+from orm.dao.CustomerDAOSqlAlchemy import CustomerDAOSqlAlchemy
+from orm.dao.EmployeeDAOSqlAlchemy import EmployeeDAOSqlAlchemy
+from orm.dao.ProductDAOSqlAlchemy import ProductDAOSqlAlchemy
+
 from controller.CustomerController import CustomerController
 from controller.EmployeeController import EmployeeController
 from controller.ProductController import ProductController
@@ -7,11 +16,17 @@ from typing import Dict, List
 from datetime import datetime, timedelta
 
 class OrderController:
-    def __init__(self):
-        self.order_dao = OrderDAO()
-        self.customer_controller = CustomerController()
-        self.employee_controller = EmployeeController()
-        self.product_controller = ProductController()
+    def __init__(self, prevent_sql_injection_ff):
+        if not prevent_sql_injection_ff:
+            self.order_dao = OrderDAO()
+            self.customer_controller = CustomerController(CustomerDAO())
+            self.employee_controller = EmployeeController(EmployeeDAO())
+            self.product_controller = ProductController(ProductDAO())
+        else:
+            self.order_dao = OrderDAOSqlAlchemy()
+            self.customer_controller = CustomerController(CustomerDAOSqlAlchemy())
+            self.employee_controller = EmployeeController(EmployeeDAOSqlAlchemy())
+            self.product_controller = ProductController(ProductDAOSqlAlchemy())
         
     def InsertOrder(
         self,
