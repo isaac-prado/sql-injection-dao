@@ -1,7 +1,7 @@
 import tkinter as tk
 from controller.OrderController import OrderController
 
-sql_injection_prevention_flag = False
+sql_injection_prevention_flag = True
 
 class FormularioPedidoDinamico:
     def __init__(self, janela):
@@ -94,6 +94,17 @@ class FormularioPedidoDinamico:
         toast_window.after(3000, toast_window.destroy)  # 3000 milissegundos = 3 segundos
 
     def enviar(self):
+        self.order_controller.InsertOrder(
+            customer_id=self.entry_nome_do_cliente.get(),
+            employee_id=self.entry_nome_do_vendedor.get(),
+            ship_data={
+                "required_date": self.text_dados_do_pedido.get("1.0", tk.END).strip()
+            },
+            items=[{
+                "productname": item["nome"].get(),
+                "quantity": item["quantidade"].get()
+            } for item in self.itens]
+        )
         self.mostrar_toast("Pedido enviado com sucesso!")
 
 # Criar a janela principal

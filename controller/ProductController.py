@@ -2,7 +2,7 @@ from noorm.dao.ProductDAO import ProductDAO
 
 class ProductController:
     def __init__(self, product_dao):
-        self.ProductDAO = ProductDAO()
+        self.ProductDAO = product_dao
         
     def GetProductByName(self, name):
         product = self.ProductDAO.GetProductByName(name)

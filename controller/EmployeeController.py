@@ -1,5 +1,3 @@
-from noorm.dao.EmployeeDAO import EmployeeDAO
-
 class EmployeeController:
     def __init__(self, employee_dao):
         self.EmployeeDAO = employee_dao
