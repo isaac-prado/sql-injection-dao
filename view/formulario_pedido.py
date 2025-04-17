@@ -1,5 +1,7 @@
+import re
 import tkinter as tk
 from controller.OrderController import OrderController
+from controller.EmployeeController import EmployeeController
 from datetime import datetime
 sql_injection_prevention_flag = True
 
@@ -50,14 +52,23 @@ class FormularioPedidoDinamico:
         botao_enviar = tk.Button(self.janela, text="Enviar", command=self.enviar)
         botao_enviar.grid(row=6, column=0, columnspan=4, padx=5, pady=10)
 
-        # Campo para ID do pedido
         self.entry_order_id = tk.Entry(self.janela)
         self.entry_order_id.grid(row=7, column=1, padx=5, pady=5, sticky="ew")
         tk.Label(self.janela, text="ID do Pedido para relatório:").grid(row=7, column=0, padx=5, pady=5, sticky="w")
 
-        # Botão para ver relatório
         botao_relatorio = tk.Button(self.janela, text="📄 Ver Detalhes do Pedido", command=self.ver_relatorio_pedido)
         botao_relatorio.grid(row=8, column=0, columnspan=2, padx=5, pady=5)
+
+        self.entry_data_inicial = tk.Entry(self.janela)
+        self.entry_data_inicial.grid(row=10, column=1, padx=5, pady=5, sticky="ew")
+        tk.Label(self.janela, text="Data Inicial:").grid(row=10, column=0, padx=5, pady=5, sticky="w")
+
+        self.entry_data_final = tk.Entry(self.janela)
+        self.entry_data_final.grid(row=11, column=1, padx=5, pady=5, sticky="ew")
+        tk.Label(self.janela, text="Data Final:").grid(row=11, column=0, padx=5, pady=5, sticky="w")
+
+        botao_ranking = tk.Button(self.janela, text="📊 Ver Ranking de Vendedores", command=self.ver_ranking_funcionarios)
+        botao_ranking.grid(row=12, column=0, columnspan=2, padx=5, pady=5)  
 
         self.janela.grid_columnconfigure(1, weight=1)
         self.janela.grid_columnconfigure(3, weight=1)
@@ -74,6 +85,7 @@ class FormularioPedidoDinamico:
             return
 
         self.order_controller = OrderController(using_orm=using_orm, sql_injection_enabled=sql_injection_enabled)
+        self.employee_controller = EmployeeController(using_orm=using_orm)
 
     def criar_campo(self, texto_label, linha):
         label = tk.Label(self.janela, text=texto_label)
@@ -161,7 +173,7 @@ class FormularioPedidoDinamico:
         self.atualizar_controller()
 
         if self.order_controller is None:
-            self.mostrar_toast("⚠️ Modo inválido, corrija as opções.")
+            self.mostrar_toast("⚠️ Modo inválido, corrija as opções no canto superior direito.")
             return
 
         order_id = self.entry_order_id.get().strip()
@@ -172,18 +184,22 @@ class FormularioPedidoDinamico:
 
         try:
             dados = self.order_controller.GetOrderInformationById(int(order_id))
+
             if not dados:
                 self.mostrar_toast("❌ Pedido não encontrado.")
                 return
 
-            print("\n📋 DETALHES DO PEDIDO")
+            print("\n--------------------------------")
+            print("📋 DETALHES DO PEDIDO")
             cabecalho = dados[0]
             print(f"Pedido #{cabecalho[0]} - Data: {cabecalho[1]}")
             print(f"Cliente: {cabecalho[2]}")
-            print(f"Vendedor: {cabecalho[3]} {cabecalho[4]}")
+            print(f"Vendedor: {cabecalho[3]}")
             print("Itens:")
+            print("--------------------------------")
             for item in dados:
-                print(f"• {item[5]} | Quantidade: {item[6]} | Preço: R$ {item[7]:.2f}")
+                print(f"- {item[4]} | Quantidade: {item[5]} | Preço: R$ {item[6]:.2f}")
+            print("--------------------------------")
 
             self.mostrar_toast("✅ Detalhes do pedido exibidos no terminal.")
 
@@ -191,3 +207,52 @@ class FormularioPedidoDinamico:
             print(f"Erro no relatório: {e}")
             self.mostrar_toast(f"❌ Erro ao gerar relatório: {e}")
 
+    def validar_datas(self, data_inicial, data_final):
+        padrao = r'^\d{4}-\d{2}-\d{2}$'
+
+        if not re.match(padrao, data_inicial) or not re.match(padrao, data_final):
+            self.mostrar_toast("⚠️ Formato de data inválido. Use o formato YYYY-MM-DD.")
+            return False
+
+        if (datetime.strptime(data_inicial, "%Y-%m-%d") > datetime.strptime(data_final, "%Y-%m-%d")):
+            self.mostrar_toast("⚠️ A data inicial não pode ser maior que a data final.")
+            return False
+
+        return True
+
+    def ver_ranking_funcionarios(self):
+        self.atualizar_controller()
+
+        if self.order_controller is None:
+            self.mostrar_toast("⚠️ Modo inválido, corrija as opções no canto superior direito.")
+            return
+
+        initial_date = self.entry_data_inicial.get()
+        final_date = self.entry_data_final.get()
+
+        if not initial_date or not final_date:
+            self.mostrar_toast("⚠️ Informe as datas inicial e final.")
+            return
+        
+        if not self.validar_datas(initial_date, final_date):
+            return
+        
+        try:
+            ranking = self.employee_controller.GetEmployeeRanking(initial_date, final_date)
+
+            if not ranking:
+                self.mostrar_toast("❌ Nenhum funcionário encontrado.")
+                return
+            
+            print("\n--------------------------------")
+            print("📋 RANKING DE VENDEDORES")
+            print("--------------------------------")
+            for funcionario in ranking:
+                print(f"- {funcionario[0]} | Quantidade de vendas: {funcionario[1]} | Total de vendas: R$ {funcionario[2]:.2f}")
+            print("--------------------------------")
+
+            self.mostrar_toast("✅ Ranking de vendedores exibido no terminal.")
+
+        except Exception as e:
+            print(f"Erro no ranking: {e}")
+            self.mostrar_toast(f"❌ Erro ao gerar ranking: {e}")

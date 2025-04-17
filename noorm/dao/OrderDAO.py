@@ -131,7 +131,7 @@ class OrderDAO:
             """
 
             self.session.execute(query, (order_id,))
-            return self.session.fetchone()
+            return self.session.fetchall()
         except Exception as e:
             print(f"Error getting order by id: {e}")
             return None

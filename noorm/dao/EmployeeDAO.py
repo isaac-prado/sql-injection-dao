@@ -14,3 +14,26 @@ class EmployeeDAO:
             return { "employeeid": row[0] }
         except Exception as e:
             print(f"Error getting employee by name: {e}")
+
+    def GetEmployeeRanking(self, initial_date, final_date):
+        try:
+            query = """
+                SELECT 
+                    e.firstname || ' ' || e.lastname AS employee_name,
+                    COUNT(DISTINCT o.orderid) AS orders_count,
+                    SUM(od.quantity * (od.unitprice * (1 - od.discount))) AS total_sales
+                FROM northwind.orders o
+                JOIN northwind.employees e ON o.employeeid = e.employeeid
+                JOIN northwind.order_details od ON o.orderid = od.orderid
+                WHERE o.orderdate BETWEEN %s AND %s
+                GROUP BY e.employeeid
+                ORDER BY total_sales DESC
+                LIMIT 5
+            """
+            self.session.execute(query, (initial_date, final_date))
+            return self.session.fetchall()
+        
+        except Exception as e:
+            print(f"Error getting employee ranking: {e}")
+            return None
+            
