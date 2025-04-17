@@ -1,4 +1,4 @@
-from psycopg2.dao.ProductDAO import ProductDAO
+from noorm.dao.ProductDAO import ProductDAO
 
 class ProductController:
     def __init__(self, product_dao):

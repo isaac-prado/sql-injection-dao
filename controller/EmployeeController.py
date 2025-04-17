@@ -1,4 +1,4 @@
-from psycopg2.dao.EmployeeDAO import EmployeeDAO
+from noorm.dao.EmployeeDAO import EmployeeDAO
 
 class EmployeeController:
     def __init__(self, employee_dao):

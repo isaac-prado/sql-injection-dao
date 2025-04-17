@@ -1,21 +1,21 @@
 from sqlalchemy.orm import Session
-from db.database import getSession
-from model.model import Order, OrderDetail
+from orm.db.database import getConnection
+from orm.model.model import Orders, OrderDetails
 
 class OrderDAOSqlAlchemy:
     def __init__(self):
-        self.session: Session = getSession()
+        self.session: Session = getConnection()
 
     def GetOrderById(self, order_id):
         try:
-            return self.session.query(Order).filter(Order.orderid == order_id).first()
+            return self.session.query(Orders).filter(Orders.orderid == order_id).first()
         except Exception as e:
             print(f"Error getting order by id: {e}")
             return None
 
     def GetOrderByCustomerId(self, customer_id):
         try:
-            return self.session.query(Order).filter(Order.customerid.ilike(customer_id)).all()
+            return self.session.query(Orders).filter(Orders.customerid.ilike(customer_id)).all()
         except Exception as e:
             print(f"Error getting order by customer id: {e}")
             return None
@@ -38,7 +38,7 @@ class OrderDAOSqlAlchemy:
         items
     ):
         try:
-            new_order = Order(
+            new_order = Orders(
                 customerid=customer_id,
                 employeeid=employee_id,
                 orderdate=order_date,
@@ -57,7 +57,7 @@ class OrderDAOSqlAlchemy:
             self.session.flush()  # Flush to get the order_id
             
             for item in items:
-                order_detail = OrderDetail(
+                order_detail = OrderDetails(
                     orderid=new_order.orderid,
                     productid=item['product_id'],
                     unitprice=item['unit_price'],

@@ -1,4 +1,4 @@
-from psycopg2.dao.CustomerDAO import CustomerDAO
+from noorm.dao.CustomerDAO import CustomerDAO
 
 class CustomerController:
     def __init__(self, customer_dao):

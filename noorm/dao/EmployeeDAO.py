@@ -1,4 +1,4 @@
-from db.database import getConnection
+from noorm.db.database import getConnection
 
 class EmployeeDAO:
     def __init__(self):

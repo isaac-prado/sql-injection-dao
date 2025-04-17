@@ -1,7 +1,7 @@
 import tkinter as tk
-from controller import OrderController
+from controller.OrderController import OrderController
 
-sql_injection_prevention_flag = True
+sql_injection_prevention_flag = False
 
 class FormularioPedidoDinamico:
     def __init__(self, janela):

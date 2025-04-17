@@ -1,7 +1,7 @@
-from psycopg2.dao.OrderDAO import OrderDAO
-from psycopg2.dao.CustomerDAO import CustomerDAO
-from psycopg2.dao.EmployeeDAO import EmployeeDAO
-from psycopg2.dao.ProductDAO import ProductDAO
+from noorm.dao.OrderDAO import OrderDAO
+from noorm.dao.CustomerDAO import CustomerDAO
+from noorm.dao.EmployeeDAO import EmployeeDAO
+from noorm.dao.ProductDAO import ProductDAO
 
 from orm.dao.OrderDAOSqlAlchemy import OrderDAOSqlAlchemy
 from orm.dao.CustomerDAOSqlAlchemy import CustomerDAOSqlAlchemy
