@@ -71,11 +71,11 @@ class OrderController:
                     product_id = product["productid"]
                     unitprice = product["unitprice"]
                 
-                formated_items. append({
+                formated_items.append({
                     "product_id": product_id,
                     "unit_price": unitprice,
                     "quantity": item.get("quantity"),
-                    "discount": item.get("discount")
+                    "discount": item.get("discount", 0.0)
                 })
 
                 if self.using_orm:
