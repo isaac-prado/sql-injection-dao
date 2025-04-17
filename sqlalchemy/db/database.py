@@ -5,3 +5,6 @@ DATABASE_URL="postgresql://isaac:isaac@localhost/northwind"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+
+def getConnection():
+    return SessionLocal()
