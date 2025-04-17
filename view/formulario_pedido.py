@@ -1,4 +1,7 @@
 import tkinter as tk
+from controller.OrderController import OrderController
+from datetime import datetime
+sql_injection_prevention_flag = True
 
 class FormularioPedidoDinamico:
     def __init__(self, janela):
@@ -6,6 +9,26 @@ class FormularioPedidoDinamico:
         self.janela.title("Formulário de Pedido")
 
         self.itens = []
+
+        self.using_orm_flag = tk.BooleanVar(value=True)
+        self.sql_injection_enabled_flag = tk.BooleanVar(value=False)
+
+        frame_opcoes = tk.Frame(self.janela)
+        frame_opcoes.grid(row=0, column=2, columnspan=2, padx=5, pady=5, sticky="w")
+
+        tk.Checkbutton(
+            frame_opcoes,
+            text="Usar o SQLAlchemy (ORM)",
+            variable=self.using_orm_flag
+        ).pack(anchor="w")
+
+        tk.Checkbutton(
+            frame_opcoes,
+            text="Habilitar SQL Injection",
+            variable=self.sql_injection_enabled_flag
+        ).pack(anchor="w")
+        
+        self.atualizar_controller()
 
         self.criar_campo("Nome do Cliente:", 0)
         self.criar_campo("Nome do Vendedor:", 1)
@@ -29,6 +52,19 @@ class FormularioPedidoDinamico:
 
         self.janela.grid_columnconfigure(1, weight=1)
         self.janela.grid_columnconfigure(3, weight=1)
+
+    def atualizar_controller(self):
+        using_orm = self.using_orm_flag.get()
+        sql_injection_enabled = self.sql_injection_enabled_flag.get()
+
+        if using_orm and sql_injection_enabled:
+            self.mostrar_toast("Não é possível usar o SQLAlchemy e habilitar SQL Injection ao mesmo tempo.")
+            self.order_controller = None
+            self.using_orm_flag.set(False)
+            self.sql_injection_enabled_flag.set(False)
+            return
+
+        self.order_controller = OrderController(using_orm=using_orm, sql_injection_enabled=sql_injection_enabled)
 
     def criar_campo(self, texto_label, linha):
         label = tk.Label(self.janela, text=texto_label)
@@ -70,7 +106,6 @@ class FormularioPedidoDinamico:
             item_remover = self.itens.pop()
             item_remover["frame"].destroy()
 
-
     def mostrar_toast(self, mensagem):
         toast_window = tk.Toplevel(self.janela)
         toast_window.overrideredirect(True) 
@@ -90,9 +125,26 @@ class FormularioPedidoDinamico:
         toast_window.after(3000, toast_window.destroy)  # 3000 milissegundos = 3 segundos
 
     def enviar(self):
-        self.mostrar_toast("Pedido enviado com sucesso!")
+        self.atualizar_controller()
 
-# Criar a janela principal
-janela = tk.Tk()
-formulario = FormularioPedidoDinamico(janela)
-janela.mainloop()
+        if self.order_controller is None:
+            return
+
+        raw_date = self.text_dados_do_pedido.get("1.0", tk.END).strip()
+
+        if raw_date:
+            required_date = datetime.strptime(raw_date, "%Y-%m-%d")
+        else:
+            required_date = datetime.now()
+
+        self.order_controller.InsertOrder(
+            customer_name=self.entry_nome_do_cliente.get(),
+            employee_name=self.entry_nome_do_vendedor.get(),
+            ship_data={"required_date": required_date},
+            items=[{
+                "productname": item["nome"].get(),
+                "quantity": item["quantidade"].get()
+            } for item in self.itens]
+        )
+        self.mostrar_toast("✅ Pedido enviado com sucesso!")
+
