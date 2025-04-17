@@ -107,7 +107,3 @@ class FormularioPedidoDinamico:
         )
         self.mostrar_toast("Pedido enviado com sucesso!")
 
-# Criar a janela principal
-janela = tk.Tk()
-formulario = FormularioPedidoDinamico(janela)
-janela.mainloop()

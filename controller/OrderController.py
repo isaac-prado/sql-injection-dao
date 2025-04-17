@@ -41,17 +41,12 @@ class OrderController:
 
             formated_items = []
             for item in items:
-                product = self.product_controller.GetProductByName(item["productname"])
-
-                discount = product.get("discount")
-                if not (0 <= discount <= 1):
-                    raise ValueError("Discount must be between 0 and 1")
                 
                 formated_items.append({
                     "productid": product.get("productid"),
                     "unitprice": product.get("unitprice"),
                     "quantity": item.get("quantity"),
-                    "discount": discount
+                    "discount": 0
                 })
 
                 order_id = self.order_dao.InsertOrder(

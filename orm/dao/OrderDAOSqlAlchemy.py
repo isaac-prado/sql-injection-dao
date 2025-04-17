@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from orm.db.database import getConnection
+from orm.db.database import getSession
 from orm.model.model import Orders, OrderDetails
 
 class OrderDAOSqlAlchemy:
     def __init__(self):
-        self.session: Session = getConnection()
+        self.session = getSession()
 
     def GetOrderById(self, order_id):
         try:

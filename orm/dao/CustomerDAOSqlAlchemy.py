@@ -1,13 +1,12 @@
-from orm.db.database import getConnection
+from orm.db.database import getSession
 from orm.model.model import Customers
 
 class CustomerDAOSqlAlchemy:
     def __init__(self):
-        self.session = getConnection()
+        self.session = getSession()
         
     def GetCustomerByName(self, customer_name):
         try:
-            print(self.session)
             customer = self.session.query(Customers).filter(Customers.companyname.ilike(f"%{customer_name}%")).first()
             return customer
         except Exception as e:
