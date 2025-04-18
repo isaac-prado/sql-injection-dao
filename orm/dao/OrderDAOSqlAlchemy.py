@@ -62,8 +62,8 @@ class OrderDAOSqlAlchemy:
             for item in items:
                 order_detail = OrderDetails(
                     orderid=next_order_id,
-                    productid=item['productid'],
-                    unitprice=item['unitprice'],
+                    productid=item['product_id'],
+                    unitprice=item['unit_price'],
                     quantity=item['quantity'],
                     discount=item['discount']
                 )

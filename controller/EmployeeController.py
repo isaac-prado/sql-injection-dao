@@ -1,14 +1,6 @@
-from orm.dao.EmployeeDAOSqlAlchemy import EmployeeDAOSqlAlchemy
-from noorm.dao.EmployeeDAO import EmployeeDAO
-
 class EmployeeController:
-    def __init__(self, using_orm: bool):
-        self.using_orm = using_orm
-
-        if using_orm:
-            self.EmployeeDAO = EmployeeDAOSqlAlchemy()
-        else:
-            self.EmployeeDAO = EmployeeDAO()
+    def __init__(self, employee_dao):
+        self.EmployeeDAO = employee_dao
 
     def GetEmployeeByName(self, name):
         employee = self.EmployeeDAO.GetEmployeeByName(name)

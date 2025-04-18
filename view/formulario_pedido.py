@@ -85,7 +85,6 @@ class FormularioPedidoDinamico:
             return
 
         self.order_controller = OrderController(using_orm=using_orm, sql_injection_enabled=sql_injection_enabled)
-        self.employee_controller = EmployeeController(using_orm=using_orm)
 
     def criar_campo(self, texto_label, linha):
         label = tk.Label(self.janela, text=texto_label)
