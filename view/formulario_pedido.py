@@ -1,12 +1,13 @@
 import re
 import tkinter as tk
 from controller.OrderController import OrderController
-from controller.EmployeeController import EmployeeController
 from datetime import datetime
 sql_injection_prevention_flag = True
 
 class FormularioPedidoDinamico:
     def __init__(self, janela):
+
+
         self.janela = janela
         self.janela.title("Formulário de Pedido")
 
@@ -34,7 +35,6 @@ class FormularioPedidoDinamico:
 
         self.criar_campo("Nome do Cliente:", 0)
         self.criar_campo("Nome do Vendedor:", 1)
-        self.criar_campo_texto("Dados do Pedido:", 2)
 
         tk.Label(self.janela, text="Itens do Pedido:").grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
@@ -150,12 +150,7 @@ class FormularioPedidoDinamico:
         if self.order_controller is None:
             return
 
-        raw_date = self.text_dados_do_pedido.get("1.0", tk.END).strip()
-
-        if raw_date:
-            required_date = datetime.strptime(raw_date, "%Y-%m-%d")
-        else:
-            required_date = datetime.now()
+        required_date = datetime.now()
 
         self.order_controller.InsertOrder(
             customer_name=self.entry_nome_do_cliente.get(),
@@ -237,7 +232,7 @@ class FormularioPedidoDinamico:
             return
         
         try:
-            ranking = self.employee_controller.GetEmployeeRanking(initial_date, final_date)
+            ranking = self.order_controller.GetEmployeeRanking(initial_date, final_date)
 
             if not ranking:
                 self.mostrar_toast("❌ Nenhum funcionário encontrado.")

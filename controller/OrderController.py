@@ -112,3 +112,10 @@ class OrderController:
         except Exception as e:
             print(f"Error getting order information by id: {e}")
             return None
+        
+    def GetEmployeeRanking(self, initial_date, final_date):
+        try:
+            return self.employee_controller.GetEmployeeRanking(initial_date, final_date)
+        except Exception as e:
+            print(f"Error getting employee ranking: {e}")
+            return None
