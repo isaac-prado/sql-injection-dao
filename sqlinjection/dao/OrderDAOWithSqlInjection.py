@@ -31,15 +31,6 @@ class OrderDAOWithSqlInjection:
         employee_id,
         order_date,
         required_date,
-        shipped_date,
-        freight,
-        ship_name,
-        ship_address,
-        ship_city,
-        ship_region,
-        ship_postal_code,
-        ship_country,
-        shipper_id,
         items
     ):
         try:
@@ -48,14 +39,13 @@ class OrderDAOWithSqlInjection:
 
             insert_order = f"""
                 INSERT INTO northwind.orders (
-                    orderid, customerid, employeeid, orderdate, requireddate, shippeddate, 
-                    freight, shipname, shipaddress, shipcity, shipregion, 
-                    shippostalcode, shipcountry, shipperid
+                    orderid, 
+                    customerid, 
+                    employeeid, 
+                    orderdate, 
+                    requireddate
                 ) VALUES (
-                    {order_id}, '{customer_id}', {employee_id}, '{order_date}', '{required_date}',
-                    {'NULL' if shipped_date is None else f"'{shipped_date}'"}, {freight},
-                    '{ship_name}', '{ship_address}', '{ship_city}', '{ship_region}',
-                    '{ship_postal_code}', '{ship_country}', {shipper_id}
+                    {order_id}, '{customer_id}', {employee_id}, '{order_date}', '{required_date}'
                 )
             """
             print(f"[⚠️ QUERY VULNERÁVEL ⚠️] Executando: {insert_order}")
@@ -66,7 +56,7 @@ class OrderDAOWithSqlInjection:
                     INSERT INTO northwind.order_details (
                         orderid, productid, unitprice, quantity, discount
                     ) VALUES (
-                        {order_id}, {item['productid']}, {item['unitprice']}, {item['quantity']}, {item['discount']}
+                        {order_id}, {item['product_id']}, {item['unit_price']}, {item['quantity']}, {item['discount']}
                     )
                 """
                 print(f"[⚠️ QUERY VULNERÁVEL ⚠️] Executando: {insert_order_details}")

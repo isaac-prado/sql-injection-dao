@@ -34,6 +34,9 @@ class OrderController:
             print("--------------------------------")
         elif sql_injection_enabled:
             self.order_dao = OrderDAOWithSqlInjection()
+            self.customer_controller = CustomerController(CustomerDAO())
+            self.employee_controller = EmployeeController(EmployeeDAO())
+            self.product_controller = ProductController(ProductDAO())
             print("--------------------------------")
             print("⚠️ UTILIZANDO SQL INJECTION ⚠️")
             print("--------------------------------")
@@ -90,15 +93,6 @@ class OrderController:
                     employee_id=employee_id,
                     order_date=datetime.now(),
                     required_date=ship_data.get("required_date", datetime.now() + timedelta(days=30)),
-                    shipped_date=ship_data.get("shipped_date", None),
-                    freight=ship_data.get("freight", None),
-                    ship_name=ship_data.get("ship_name", None),
-                    ship_address=ship_data.get("ship_address", None),
-                    ship_city=ship_data.get("ship_city", None),
-                    ship_region=ship_data.get("ship_region", None),
-                    ship_postal_code=ship_data.get("ship_postal_code", None),
-                    ship_country=ship_data.get("ship_country", None),
-                    shipper_id=ship_data.get("shipper_id", None),
                     items=formated_items
                 )
 
