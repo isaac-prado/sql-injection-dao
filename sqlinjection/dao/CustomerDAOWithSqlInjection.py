@@ -6,7 +6,7 @@ class CustomerDAOWithSqlInjection:
         self.session = self.connection.cursor()
 
     def GetCustomerByName(self, name):
-        sql = f"SELECT * FROM northwind.customers WHERE companyname = '{name}'"
+        sql = f"SELECT * FROM northwind.customers WHERE companyname ILIKE '%{name}%'"
         print(f"Executing SQL: {sql}")
         self.session.execute(sql)
         result = self.connection.commit()

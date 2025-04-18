@@ -27,32 +27,8 @@ class OrderDAO:
         employee_id,
         order_date,
         required_date,
-        shipped_date,
-        freight,
-        ship_name,
-        ship_address,
-        ship_city,
-        ship_region,
-        ship_postal_code,
-        ship_country,
-        shipper_id,
         items
-    ):
-        print("customer_id", customer_id)
-        print("employee_id", employee_id)
-        print("order_date", order_date)
-        print("required_date", required_date)
-        print("shipped_date", shipped_date)
-        print("freight", freight)
-        print("ship_name", ship_name)
-        print("ship_address", ship_address)
-        print("ship_city", ship_city)
-        print("ship_region", ship_region)
-        print("ship_postal_code", ship_postal_code)
-        print("ship_country", ship_country)
-        print("shipper_id", shipper_id)
-        print("--------------------------------")
-        
+    ):        
         try:
             # NO AUTO-INCREMENT
             self.session.execute(
@@ -69,25 +45,13 @@ class OrderDAO:
                     customerid, 
                     employeeid, 
                     orderdate, 
-                    requireddate, 
-                    shippeddate, 
-                    freight, 
-                    shipname, 
-                    shipaddress, 
-                    shipcity, 
-                    shipregion, 
-                    shippostalcode, 
-                    shipcountry, 
-                    shipperid
+                    requireddate
                     ) 
                     VALUES 
-                    (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    (%s, %s, %s, %s, %s)
                 ''',
-                (order_id, customer_id, employee_id, order_date, required_date, shipped_date, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country, shipper_id)
+                (order_id, customer_id, employee_id, order_date, required_date)
             )
-            print("order_id", order_id)
-            print("--------------------------------")
-            print("items", items)
             
             for item in items:
                 self.session.execute(
