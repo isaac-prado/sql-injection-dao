@@ -4,6 +4,7 @@ from noorm.dao.EmployeeDAO import EmployeeDAO
 from noorm.dao.ProductDAO import ProductDAO
 
 from sqlinjection.dao.OrderDAOWithSqlInjection import OrderDAOWithSqlInjection
+from sqlinjection.dao.CustomerDAOWithSqlInjection import CustomerDAOWithSqlInjection
 
 from orm.dao.OrderDAOSqlAlchemy import OrderDAOSqlAlchemy
 from orm.dao.CustomerDAOSqlAlchemy import CustomerDAOSqlAlchemy
@@ -34,6 +35,9 @@ class OrderController:
             print("--------------------------------")
         elif sql_injection_enabled:
             self.order_dao = OrderDAOWithSqlInjection()
+            self.customer_controller = CustomerController(CustomerDAOWithSqlInjection())
+            self.employee_controller = EmployeeController(EmployeeDAO())
+            self.product_controller = ProductController(ProductDAO())
             print("--------------------------------")
             print("⚠️ UTILIZANDO SQL INJECTION ⚠️")
             print("--------------------------------")
@@ -90,15 +94,6 @@ class OrderController:
                     employee_id=employee_id,
                     order_date=datetime.now(),
                     required_date=ship_data.get("required_date", datetime.now() + timedelta(days=30)),
-                    shipped_date=ship_data.get("shipped_date", None),
-                    freight=ship_data.get("freight", None),
-                    ship_name=ship_data.get("ship_name", None),
-                    ship_address=ship_data.get("ship_address", None),
-                    ship_city=ship_data.get("ship_city", None),
-                    ship_region=ship_data.get("ship_region", None),
-                    ship_postal_code=ship_data.get("ship_postal_code", None),
-                    ship_country=ship_data.get("ship_country", None),
-                    shipper_id=ship_data.get("shipper_id", None),
                     items=formated_items
                 )
 
@@ -116,4 +111,11 @@ class OrderController:
             return self.order_dao.OrderInformationById(order_id)
         except Exception as e:
             print(f"Error getting order information by id: {e}")
+            return None
+        
+    def GetEmployeeRanking(self, initial_date, final_date):
+        try:
+            return self.employee_controller.GetEmployeeRanking(initial_date, final_date)
+        except Exception as e:
+            print(f"Error getting employee ranking: {e}")
             return None

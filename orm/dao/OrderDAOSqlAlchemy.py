@@ -26,15 +26,6 @@ class OrderDAOSqlAlchemy:
         employee_id,
         order_date,
         required_date,
-        shipped_date,
-        freight,
-        ship_name,
-        ship_address,
-        ship_city,
-        ship_region,
-        ship_postal_code,
-        ship_country,
-        shipper_id,
         items
     ):
         try:
@@ -45,16 +36,7 @@ class OrderDAOSqlAlchemy:
                 customerid=customer_id,
                 employeeid=employee_id,
                 orderdate=order_date,
-                requireddate=required_date,
-                shippeddate=shipped_date,
-                freight=freight,
-                shipname=ship_name,
-                shipaddress=ship_address,
-                shipcity=ship_city,
-                shipregion=ship_region,
-                shippostalcode=ship_postal_code,
-                shipcountry=ship_country,
-                shipperid=shipper_id
+                requireddate=required_date
             )
             self.session.add(new_order)
             self.session.flush()  # Flush to get the order_id
@@ -62,8 +44,8 @@ class OrderDAOSqlAlchemy:
             for item in items:
                 order_detail = OrderDetails(
                     orderid=next_order_id,
-                    productid=item['productid'],
-                    unitprice=item['unitprice'],
+                    productid=item['product_id'],
+                    unitprice=item['unit_price'],
                     quantity=item['quantity'],
                     discount=item['discount']
                 )
