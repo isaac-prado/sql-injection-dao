@@ -4,6 +4,7 @@ from noorm.dao.EmployeeDAO import EmployeeDAO
 from noorm.dao.ProductDAO import ProductDAO
 
 from sqlinjection.dao.OrderDAOWithSqlInjection import OrderDAOWithSqlInjection
+from sqlinjection.dao.CustomerDAOWithSqlInjection import CustomerDAOWithSqlInjection
 
 from orm.dao.OrderDAOSqlAlchemy import OrderDAOSqlAlchemy
 from orm.dao.CustomerDAOSqlAlchemy import CustomerDAOSqlAlchemy
@@ -34,7 +35,7 @@ class OrderController:
             print("--------------------------------")
         elif sql_injection_enabled:
             self.order_dao = OrderDAOWithSqlInjection()
-            self.customer_controller = CustomerController(CustomerDAO())
+            self.customer_controller = CustomerController(CustomerDAOWithSqlInjection())
             self.employee_controller = EmployeeController(EmployeeDAO())
             self.product_controller = ProductController(ProductDAO())
             print("--------------------------------")
