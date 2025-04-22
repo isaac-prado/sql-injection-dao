@@ -46,6 +46,6 @@ e também em:
 db/noorm/database.py
 ```
 
-> 🔒 Altere `usuário`, `senha`, `host`, `porta` e `nome_do_banco` conforme o seu ambiente local.
+> 🔒 Altere `usuário` e `senha` conforme o seu ambiente local.
 
 ---
